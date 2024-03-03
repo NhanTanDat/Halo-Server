@@ -4,17 +4,23 @@ const { ACC_ADMIN } = require('./configuration');
 
 const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb://127.0.0.1:27017/shoe-api');
-    const acc_admin = await Account.findOne({
-      username: ACC_ADMIN.username,
-    });
-    if (!acc_admin) {
-      await Account.create(ACC_ADMIN);
-      console.log('admin account created');
-    }
-    console.log('connect db success');
+    const DB = process.env.DATABASE.replace(
+      "<PASSWORD>",
+      process.env.DATABASE_PASSWORD
+    );
+
+    const options = {
+      // useNewUrlParser: true,
+      // useCreateIndex: true,
+      // useFindAndModify: false,
+      // useUnifiedTopology: true,
+    };
+
+    await mongoose.connect(DB, options);
+    console.log("DB Connection successful");
   } catch (error) {
-    console.log('Connect database error');
+    console.error("Connect database error:", error.message);
+    process.exit(1); // Exit process with failure
   }
 };
 
